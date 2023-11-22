@@ -16,13 +16,14 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class Users {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
     @Column(name = "username", unique = true)
-    private  String userName;
+    private  String username;
 
     @Column(name = "email", unique = true)
     private  String email;
@@ -49,10 +50,11 @@ public class Users {
     @Column(name = "`status`", nullable = false)
     private UserStatus status = UserStatus.NOT_ACTIVE;
     public Users(String userName, String email, String password) {
-        this.userName = userName;
+        this.username = userName;
         this.email = email;
         this.password = password;
     }
+    private boolean isActive;
     public enum UserStatus {
         NOT_ACTIVE, ACTIVE;
     }
@@ -60,6 +62,14 @@ public class Users {
     Male, Female, Unknown;
     }
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private ROLE role = ROLE.USER;
+
+
+    public enum ROLE {
+        USER, ADMIN
+    }
 //    @OneToMany(mappedBy = "users")
 //    private List<EcoFootprintLog> ecoFootprintLogs;
 //    @OneToMany(mappedBy = "users")

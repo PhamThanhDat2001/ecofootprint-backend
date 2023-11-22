@@ -21,7 +21,7 @@ public class EmailService implements IEmailService{
         Users user = userService.findUserByEmail(email);
         String token = registrationUserTokenRepository.findByUserId(user.getId());
 
-        String confirmationUrl = "http://localhost:8080/api/v1/Users/activeUser?token=" + token;
+        String confirmationUrl = "http://localhost:8080/api/v1/user/activeUser?token=" + token;
 
         String subject = "Xác Nhận Đăng Ký Account";
         String content = "Bạn đã đăng ký thành công. Click vào link dưới đây để kích hoạt tài khoản \n"

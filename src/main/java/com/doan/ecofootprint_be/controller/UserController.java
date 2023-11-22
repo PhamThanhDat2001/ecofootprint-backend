@@ -2,6 +2,7 @@ package com.doan.ecofootprint_be.controller;
 
 
 import com.doan.ecofootprint_be.dto.UserDTO;
+import com.doan.ecofootprint_be.entity.Users;
 import com.doan.ecofootprint_be.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,18 @@ import javax.validation.Valid;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping(value = "/api/v1/Users")
+@RequestMapping(value = "/api/v1")
 @Validated
 public class UserController {
 
 	@Autowired
 	private IUserService userService;
 
-	@PostMapping()
+	@GetMapping("/user/{id}")
+	public Users getUserById(@PathVariable int id){
+		return userService.getUserById(id);
+	}
+	@PostMapping("/user/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO dto) {
 
 		// create User
@@ -29,7 +34,7 @@ public class UserController {
 		return new ResponseEntity<>("We have sent 1 email. Please check email to active account!", HttpStatus.OK);
 	}
 
-	@GetMapping("/activeUser")
+	@GetMapping("/user/activeUser")
 	public ResponseEntity<?> activeUserViaEmail(@RequestParam String token) {
 
 		// active user
@@ -38,7 +43,7 @@ public class UserController {
 		return new ResponseEntity<>("Active success!", HttpStatus.OK);
 	}
 	// resend confirm
-	@GetMapping("/userRegistrationConfirmRequest")
+	@GetMapping("/user/userRegistrationConfirmRequest")
 	// validate: email exists, email not active
 	public ResponseEntity<?> sendConfirmRegistrationViaEmail(@RequestParam String email) {
 

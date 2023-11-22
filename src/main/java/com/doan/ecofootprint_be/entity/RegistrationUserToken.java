@@ -34,7 +34,7 @@ public class RegistrationUserToken {
         this.token = token;
         this.users = user;
 
-        // 1h
+        //
         expiryDate = new Date(System.currentTimeMillis() + 1);
     }
 }
