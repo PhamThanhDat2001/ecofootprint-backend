@@ -3,17 +3,19 @@ package com.doan.ecofootprint_be.service;
 //import com.doan.ecofootprint_be.controller.CustomExceptionHandler;
 import com.doan.ecofootprint_be.entity.CustomUserDetail;
 import com.doan.ecofootprint_be.entity.RegistrationUserToken;
+import com.doan.ecofootprint_be.entity.ResetPasswordToken;
 import com.doan.ecofootprint_be.entity.Users;
+import com.doan.ecofootprint_be.event.OnResetPasswordViaEmailEvent;
 import com.doan.ecofootprint_be.event.OnSendRegistrationUserConfirmViaEmailEvent;
+import com.doan.ecofootprint_be.form.ChangePasswordForm;
+import com.doan.ecofootprint_be.form.ForgetPasswordForm;
+import com.doan.ecofootprint_be.form.ForgetPasswordRequestForm;
 import com.doan.ecofootprint_be.repository.RegistrationUserTokenRepository;
+import com.doan.ecofootprint_be.repository.ResetPasswordTokenRepository;
 import com.doan.ecofootprint_be.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +31,7 @@ public class UserService implements  IUserService{
     private final ApplicationEventPublisher eventPublisher;
     private final RegistrationUserTokenRepository registrationUserTokenRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final ResetPasswordTokenRepository resetPasswordTokenRepository;
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         Users users = userRepository.findByUsername(username);
         if(users == null) {
@@ -93,6 +95,59 @@ public class UserService implements  IUserService{
     public void sendConfirmUserRegistrationViaEmail(String email) {
         eventPublisher.publishEvent(new OnSendRegistrationUserConfirmViaEmailEvent(email));
     }
+
+    @Override
+    public void resetPasswordViaEmail(ForgetPasswordRequestForm form) {
+// find user by email
+        Users user = findUserByEmail(form.getEmail());
+
+        // remove token token if exists
+        resetPasswordTokenRepository.deleteByUserId(user.getId());
+
+        // create new reset password token
+        createNewResetPasswordToken(user);
+
+        // send email
+        sendResetPasswordViaEmail(form.getEmail());
+    }
+    private void createNewResetPasswordToken(Users user) {
+
+        // create new token for Reseting password
+        final String newToken = UUID.randomUUID().toString();
+        ResetPasswordToken token = new ResetPasswordToken(newToken, user);
+
+        resetPasswordTokenRepository.save(token);
+    }
+    @Override
+    public void sendResetPasswordViaEmail(String email) {
+        eventPublisher.publishEvent(new OnResetPasswordViaEmailEvent(email));
+    }
+
+    @Override
+    public void resetPassword(ForgetPasswordForm form) {
+        ResetPasswordToken resetPasswordToken = resetPasswordTokenRepository.findByToken(form.getToken());
+
+        // change password
+        Users user = resetPasswordToken.getUsers();
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        userRepository.save(user);
+
+        // remove Reset Password
+        resetPasswordTokenRepository.deleteById(resetPasswordToken.getId());
+
+    }
+
+    @Override
+    public boolean changePassword(int id, ChangePasswordForm form) {
+        Users user = userRepository.findById(id).orElse(null);
+        if (user != null && passwordEncoder.matches(form.getOldPassword(), user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     public boolean isUserActive(String username) {
         Users user = userRepository.findByUsername(username);
         return user != null && user.isActive();

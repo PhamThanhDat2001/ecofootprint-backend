@@ -28,4 +28,13 @@ public class ResetPasswordToken {
     @OneToOne
     @JoinColumn(name = "user_id")
     private  Users users;
+
+    public ResetPasswordToken(String token, Users user) {
+        this.token = token;
+        this.users = user;
+
+        // 1h
+        expiryDate = new Date(System.currentTimeMillis() + 360000);
+    }
+
 }
