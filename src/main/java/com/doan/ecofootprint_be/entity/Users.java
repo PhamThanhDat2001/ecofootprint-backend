@@ -35,7 +35,7 @@ public class Users {
     private  String fullname;
 
     @Column(name = "gender")
-    private  GENDER gender;
+    private  String gender;
 
     @Column(name = "address")
     private  String address;
@@ -46,7 +46,11 @@ public class Users {
     @Column(name = "phone")
     private  String phone;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
     @Enumerated(EnumType.ORDINAL)
+
+
     @Column(name = "`status`", nullable = false)
     private UserStatus status = UserStatus.NOT_ACTIVE;
     public Users(String userName, String email, String password) {
@@ -58,9 +62,9 @@ public class Users {
     public enum UserStatus {
         NOT_ACTIVE, ACTIVE;
     }
-    public enum GENDER{
-    Male, Female, Unknown;
-    }
+//    public enum GENDER{
+//    Male, Female, Unknown;
+//    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

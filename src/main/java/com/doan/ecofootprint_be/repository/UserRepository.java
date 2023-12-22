@@ -10,10 +10,10 @@ import org.springframework.stereotype.Repository;
 //public interface UserRepository extends JpaRepository<Users, Integer>, JpaSpecificationExecutor<Users> {
 public interface UserRepository extends JpaRepository<Users, Integer>, JpaSpecificationExecutor<Users> {
 
-//	public boolean existsByUserName(String userName);
+	public boolean existsByUsername(String username);
 
 	public boolean existsByEmail(String email);
-	
+
 	@Query("	SELECT 	status 		"
 			+ "	FROM 	Users 		"
 			+ " WHERE 	email = :email")

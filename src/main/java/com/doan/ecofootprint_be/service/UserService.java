@@ -10,6 +10,7 @@ import com.doan.ecofootprint_be.event.OnSendRegistrationUserConfirmViaEmailEvent
 import com.doan.ecofootprint_be.form.ChangePasswordForm;
 import com.doan.ecofootprint_be.form.ForgetPasswordForm;
 import com.doan.ecofootprint_be.form.ForgetPasswordRequestForm;
+import com.doan.ecofootprint_be.form.FormUpdating;
 import com.doan.ecofootprint_be.repository.RegistrationUserTokenRepository;
 import com.doan.ecofootprint_be.repository.ResetPasswordTokenRepository;
 import com.doan.ecofootprint_be.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.UUID;
 @Transactional
 @Service
@@ -33,19 +35,29 @@ public class UserService implements  IUserService{
     private final PasswordEncoder passwordEncoder;
     private final ResetPasswordTokenRepository resetPasswordTokenRepository;
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        Users users = userRepository.findByUsername(username);
-        if(users == null) {
+//        Users users = userRepository.findByUsername(username);
+//        if(users == null) {
+//            throw new UsernameNotFoundException(username);
+//        }
+//        if (!isUserActive(username)) {
+////            throw new CustomExceptionHandler("User is not active");
+////            return
+////            return (UserDetails) ResponseEntity
+////                    .status(HttpStatus.UNAUTHORIZED)
+////                    .body("Products deleted successfully.");
+//            throw new AccessDeniedException("User is not active");
+//        }
+//        return new CustomUserDetail(users);
+        Users user = userRepository.findByUsername(username);
+
+        if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        if (!isUserActive(username)) {
-//            throw new CustomExceptionHandler("User is not active");
-//            return
-//            return (UserDetails) ResponseEntity
-//                    .status(HttpStatus.UNAUTHORIZED)
-//                    .body("Products deleted successfully.");
-            throw new AccessDeniedException("User is not active");
-        }
-        return new CustomUserDetail(users);
+
+        // Use your CustomUserDetail class here
+        CustomUserDetail customUserDetail = new CustomUserDetail(user);
+
+        return customUserDetail;
     }
     @Override
     public void createUser(Users user) {
@@ -78,7 +90,10 @@ public class UserService implements  IUserService{
     public Users getAccountByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
+    @Override
+    public Users findUserByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
     @Override
     public void activeUser(String token) {
         RegistrationUserToken registrationUserToken = registrationUserTokenRepository.findByToken(token);
@@ -138,8 +153,8 @@ public class UserService implements  IUserService{
     }
 
     @Override
-    public boolean changePassword(int id, ChangePasswordForm form) {
-        Users user = userRepository.findById(id).orElse(null);
+    public boolean changePassword(String username, ChangePasswordForm form) {
+        Users user = userRepository.findByUsername(username);
         if (user != null && passwordEncoder.matches(form.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(form.getNewPassword()));
             userRepository.save(user);
@@ -148,8 +163,29 @@ public class UserService implements  IUserService{
         return false;
     }
 
+    @Override
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsUserByUserName(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
     public boolean isUserActive(String username) {
         Users user = userRepository.findByUsername(username);
         return user != null && user.isActive();
+    }
+    public void updateGroup(int id, FormUpdating form) {
+        Users entity = userRepository.findById(id).get();
+        entity.setFullname(form.getFullname());
+        entity.setGender(form.getGender());
+        entity.setAddress(form.getAddress());
+        entity.setBirthday(form.getBirthday());
+        entity.setPhone(form.getPhone());
+
+        userRepository.save(entity);
+
     }
 }

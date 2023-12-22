@@ -57,4 +57,33 @@ public class CustomUserDetail implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+    public String getUserId() {
+        return String.valueOf(users.getId());
+    }
+
+    public String getEmail() {
+        return users.getEmail();
+    }
+
+    public String getFullName() {
+        return users.getFullname();
+    }
+
+    public String getGender() {
+        return users.getGender();
+    }
+
+    public String getAddress() {
+        return users.getAddress();
+    }
+
+//    public Date  getBirthday() {
+//        return users.getBirthday();
+//    }
+
+    public String getPhone() {
+        return users.getPhone();
+    }
 }

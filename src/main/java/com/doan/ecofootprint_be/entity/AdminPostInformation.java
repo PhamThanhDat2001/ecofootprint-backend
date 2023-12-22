@@ -1,0 +1,41 @@
+package com.doan.ecofootprint_be.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Entity
+@Table(name = "admin_post_information")
+public class AdminPostInformation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = false)
+    private Users admin;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "image_url", length = 5000)
+    private String imageUrl;
+
+    @Column(name = "timestamp")
+    private Timestamp timestamp;
+
+    // Constructors, getters, setters, and other methods
+
+}

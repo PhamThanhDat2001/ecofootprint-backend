@@ -20,16 +20,45 @@ public class JwtTokenProvider {
 //    private final long JWT_EXPIRATION = 604800000L;
     private final JwtConfig jwtConfig;
     public String generateToken(CustomUserDetail userDetail) {
+
         System.out.println(userDetail.getUsers().getId());
         return Jwts.builder().setId(UUID.randomUUID().toString())
                 .setSubject(String.valueOf(userDetail.getUsers().getId()))
                 .setIssuedAt(new Date())
+
 //                .setExpiration(new Date(new Date().getTime() + JWT_EXPIRATION))
 //                .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .setExpiration(new Date(new Date().getTime() + jwtConfig.getJwtExpiration()))
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecret())
                 .compact();
     }
+//public String generateToken(CustomUserDetail userDetail) {
+//    // Lấy thông tin cơ bản
+//    String userId = String.valueOf(userDetail.getUsers().getId());
+//    String username = userDetail.getUsers().getUsername();
+//    String fullName = userDetail.getUsers().getFullname();
+//
+//    // Tạo JWT với thông tin của người dùng
+//    return Jwts.builder()
+//            .setId(UUID.randomUUID().toString())
+//            .setSubject(userId)
+////            .claim("username", username)
+////            .claim("fullName", fullName)
+//            .setIssuedAt(new Date())
+//            .setExpiration(new Date(new Date().getTime() + jwtConfig.getJwtExpiration()))
+//            .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecret())
+//            .compact();
+//}
+//public String generateToken(CustomUserDetail userDetail) {
+//    return Jwts.builder()
+//            .setId(UUID.randomUUID().toString())
+//            .setSubject(String.valueOf(userDetail.getUsers().getId()))
+//            .setIssuedAt(new Date())
+//            .setExpiration(new Date(new Date().getTime() + jwtConfig.getJwtExpiration()))
+//            .claim("username", userDetail.getUsers().getUsername())
+//            .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecret())
+//            .compact();
+//}
 
     public Integer getAccountIdFromJwt(String jwt) {
         Claims claims = Jwts.parser()
@@ -56,4 +85,7 @@ public class JwtTokenProvider {
         }
         return false;
     }
+//    public Claims extractClaims(String token) {
+//        return Jwts.parser().setSigningKey(jwtConfig.getJwtSecret()).parseClaimsJws(token).getBody();
+//    }
 }

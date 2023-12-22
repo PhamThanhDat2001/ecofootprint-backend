@@ -37,7 +37,7 @@ public class EmailService implements IEmailService{
         Users user = userService.findUserByEmail(email);
         String token = resetPasswordTokenRepository.findByUserId(user.getId());
 
-        String confirmationUrl = "http://localhost:3000/auth/new-password/" + token;
+        String confirmationUrl = "http://localhost:5173/auth/new-password/" + token;
 
         String subject = "Thiết lập lại mật khẩu";
         String content = "Click vào link dưới đây để thiết lập lại mật khẩu (nếu không phải bạn xin vui lòng bỏ qua).\n"

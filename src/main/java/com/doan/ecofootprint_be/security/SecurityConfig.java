@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(authenticationConfig.passwordEncoder());
     }
+
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        auth.userDetailsService(userService).passwordEncoder(passwordEncoderAuth());
@@ -73,14 +74,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/user/register").permitAll()
                 .antMatchers("/api/v1/user/userRegistrationConfirmRequest/**").permitAll()
                 .antMatchers("/api/v1/resetPasswordRequest").permitAll()
+                .antMatchers("/api/v1/email/**").permitAll()
+                .antMatchers("/api/v1/username/**").permitAll()
                 .antMatchers("/api/v1/resetPassword").permitAll()
                 .antMatchers("/api/v1/resendResetPassword").permitAll()
                 .antMatchers("/api/v1/change_password/**").permitAll()
+                .antMatchers("/api/v1/user/profile").permitAll()
 //                .antMatchers("/api/v1/forgot_password").permitAll()
 //                .antMatchers("/api/v1/change_password/**").permitAll()
                 .antMatchers("/api/v1/user/**").hasRole("USER")
 //                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
+//                .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and()
                 .httpBasic()
                 .and()
