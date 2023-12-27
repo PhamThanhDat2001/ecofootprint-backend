@@ -5,10 +5,13 @@ import com.doan.ecofootprint_be.entity.WaterConsumption;
 import com.doan.ecofootprint_be.repository.WasteRepository;
 import com.doan.ecofootprint_be.repository.WaterConsumptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,10 @@ public class WaterConsumptionController {
     @GetMapping("/water")
     public List<WaterConsumption> findAllAcount(){
         return waterConsumptionRepository.findAll();
+    }
+    @GetMapping("/water/{date}")
+    public WaterConsumption findDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+        return waterConsumptionRepository.findByDate(date);
     }
     @PostMapping("/water")
     ResponseEntity<?> create(@RequestBody WaterConsumption waterConsumption) {
@@ -56,4 +63,12 @@ public class WaterConsumptionController {
             return ResponseEntity.notFound().build();
         }
 }
+    @GetMapping(value = "/waterconsumptiondate/{date}")
+    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        // get entity
+        boolean result = waterConsumptionRepository.existsByDate(date);
+
+        // return result
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }

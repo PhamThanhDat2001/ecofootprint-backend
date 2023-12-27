@@ -1,14 +1,17 @@
 package com.doan.ecofootprint_be.controller;
 
-import com.doan.ecofootprint_be.entity.EnergyConsumption;
+
 import com.doan.ecofootprint_be.entity.FoodConsumption;
-import com.doan.ecofootprint_be.repository.EnergyConsumptionRepository;
+
 import com.doan.ecofootprint_be.repository.FoodConsumptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,10 @@ public class FoodConsumptionController {
     @GetMapping("/foodconsumption")
     public List<FoodConsumption> findAllAcount(){
         return foodConsumptionRepository.findAll();
+    }
+    @GetMapping("/foodconsumption/{date}")
+    public FoodConsumption findDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+        return foodConsumptionRepository.findByDate(date);
     }
     @PostMapping("/foodconsumption")
     ResponseEntity<?> create(@RequestBody FoodConsumption foodConsumption) {
@@ -56,4 +63,13 @@ public class FoodConsumptionController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping(value = "/foodconsumptiondate/{date}")
+    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        // get entity
+        boolean result = foodConsumptionRepository.existsByDate(date);
+
+        // return result
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

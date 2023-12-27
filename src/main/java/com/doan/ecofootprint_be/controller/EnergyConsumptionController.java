@@ -5,10 +5,13 @@ import com.doan.ecofootprint_be.entity.EnergyConsumption;
 import com.doan.ecofootprint_be.repository.EnergyConsumptionRepository;
 import com.doan.ecofootprint_be.service.ILogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +25,10 @@ public class EnergyConsumptionController {
     @GetMapping("/energyconsumption")
     public List<EnergyConsumption> findAllAcount(){
         return energyConsumptionRepository.findAll();
+    }
+    @GetMapping("/energyconsumption/{date}")
+    public EnergyConsumption findDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
+        return energyConsumptionRepository.findByDate(date);
     }
     @PostMapping("/energyconsumption")
     ResponseEntity<?> create(@RequestBody EnergyConsumption energyConsumption) {
@@ -55,5 +62,14 @@ public class EnergyConsumptionController {
             // Log with the specified ID was not found
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(value = "/energyconsumptiondate/{date}")
+    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        // get entity
+        boolean result = energyConsumptionRepository.existsByDate(date);
+
+        // return result
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
