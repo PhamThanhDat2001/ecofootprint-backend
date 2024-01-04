@@ -39,7 +39,7 @@ public class JwtResponse {
     private String phone;
     private String avatarUrl;
     private Users.UserStatus status;
-
+    private Users.ROLE role;
     public JwtResponse() {
     }
 
@@ -56,8 +56,16 @@ public class JwtResponse {
         this.phone = user.getPhone();
         this.status = user.getStatus();
         this.avatarUrl = user.getAvatarUrl();
+        this.role = user.getRole();
     }
 
+    public Users.ROLE getRole() {
+        return role;
+    }
+
+    public void setRole(Users.ROLE role) {
+        this.role = role;
+    }
     // Getters and setters for all fields
     // ...
 

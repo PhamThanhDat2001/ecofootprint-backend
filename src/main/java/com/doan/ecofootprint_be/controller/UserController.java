@@ -108,7 +108,7 @@ public class UserController {
 		return ResponseEntity.badRequest().body("Password incorect !!!");
 	}
 	@GetMapping("/user/profile")
-	// validate: check exists, check not expired
+// validate: check exists, check not expired
 	public ResponseEntity<?> getUserProfile(Authentication authentication) {
 
 		// get username from token
@@ -122,18 +122,19 @@ public class UserController {
 				user.getId(),
 				user.getUsername(),
 				user.getEmail(),
-				user.getFullname()!= null ? user.getFullname() : null,
+				user.getFullname() != null ? user.getFullname() : null,
 				user.getGender() != null ? user.getGender() : null,
-				user.getAddress()!= null ? user.getAddress() : null,
-				user.getBirthday().toString()!= null ? user.getBirthday().toString() : null,
-				user.getPhone()!= null ? user.getPhone(): "",
-				user.getStatus().toString() != null ? user.getStatus().toString() : null,
-				user.getRole().toString() != null ? user.getRole().toString() : null,
-				user.getAvatarUrl()!= null ? user.getAvatarUrl(): null
+				user.getAddress() != null ? user.getAddress() : null,
+				user.getBirthday() != null ? user.getBirthday().toString() : null,
+				user.getPhone() != null ? user.getPhone() : null,
+				user.getStatus() != null ? user.getStatus().toString() : null,
+				user.getRole() != null ? user.getRole().toString() : null,
+				user.getAvatarUrl() != null ? user.getAvatarUrl() : null
 		);
 
 		return new ResponseEntity<>(profileDto, HttpStatus.OK);
 	}
+
 	@PutMapping(value = "/user/{id}")
 	public ResponseEntity<?> updateGroup(@PathVariable(name = "id") short id, @RequestBody FormUpdating form) {
 		userService.updateGroup(id, form);
