@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +23,51 @@ import java.util.Optional;
 public class GreenEnergyUsageController {
     @Autowired
     private GreenEnergyUsageRepository greenEnergyUsageRepository;
-    @GetMapping("/greenenergyusage")
-    public List<GreenEnergyUsage> findAllAcount(){
-        return greenEnergyUsageRepository.findAll();
+    //    @GetMapping("/water")
+//    public List<WaterConsumption> findAllAcount(){
+//        return waterConsumptionRepository.findAll();
+//    }
+    @GetMapping("/greenenergyusage/{user_id}")
+    public ResponseEntity<List<GreenEnergyUsage>> findWaterConsumptionsByUserId(
+            @PathVariable String user_id) {
+        List<GreenEnergyUsage> transportation = greenEnergyUsageRepository.findByUserid(user_id);
+
+        if (!transportation.isEmpty()) {
+            return ResponseEntity.ok(transportation);
+        } else {
+            System.out.println("Water consumption not found for user_id: " + user_id);
+            // Any additional logic or statements if needed
+            return ResponseEntity.ok(Collections.emptyList()); // Return an empty list
+        }
     }
-    @GetMapping("/greenenergyusage/{date}")
+
+
+    @GetMapping("/greenenergyusagee/{date}")
     public GreenEnergyUsage findDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
         return greenEnergyUsageRepository.findByDate(date);
     }
+
+    @GetMapping("/greenenergyusage/{user_id}/{date}")
+    public ResponseEntity<GreenEnergyUsage> findWaterConsumptionByDateAndUserId(
+            @PathVariable String user_id,
+            @PathVariable(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+    ) {
+        GreenEnergyUsage  greenEnergyUsage= greenEnergyUsageRepository.findByDateAndUserid(date, user_id);
+        if (greenEnergyUsage != null) {
+            return ResponseEntity.ok(greenEnergyUsage);
+        }
+        else {
+            System.out.println("Water consumption not found for user_id: " + user_id);
+            // Any additional logic or statements if needed
+        }
+        return null;
+    }
+
+
+
+
     @PostMapping("/greenenergyusage")
-    ResponseEntity<?> create(@RequestBody GreenEnergyUsage greenEnergyUsage) {
+    ResponseEntity<?> create(@RequestBody GreenEnergyUsage  greenEnergyUsage) {
 
         GreenEnergyUsage created = greenEnergyUsageRepository.save(greenEnergyUsage);
         return ResponseEntity.ok(created);
@@ -42,7 +78,7 @@ public class GreenEnergyUsageController {
         return ResponseEntity.ok("Deleted successfully.");
     }
     @PutMapping("/greenenergyusage/{id}")
-    public ResponseEntity<?> update(@PathVariable int id, @RequestBody GreenEnergyUsage greenEnergyUsage) {
+    public ResponseEntity<?> update(@PathVariable int id, @RequestBody GreenEnergyUsage  greenEnergyUsage) {
         Optional<GreenEnergyUsage> existingLogOptional = greenEnergyUsageRepository.findById(id);
 
         if (existingLogOptional.isPresent()) {
@@ -64,9 +100,18 @@ public class GreenEnergyUsageController {
         }
     }
     @GetMapping(value = "/greenenergyusagedate/{date}")
-    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public ResponseEntity<?> existsUserByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         // get entity
         boolean result = greenEnergyUsageRepository.existsByDate(date);
+
+        // return result
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @GetMapping(value = "/greenenergyusagedate/{date}/{user_id}")
+    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                                  @PathVariable String user_id) {
+        // get entity
+        boolean result = greenEnergyUsageRepository.existsByDateAndUserid(date,user_id);
 
         // return result
         return new ResponseEntity<>(result, HttpStatus.OK);

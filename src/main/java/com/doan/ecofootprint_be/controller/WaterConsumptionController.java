@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,14 +23,49 @@ import java.util.Optional;
 public class WaterConsumptionController {
     @Autowired
     private WaterConsumptionRepository waterConsumptionRepository;
-    @GetMapping("/water")
-    public List<WaterConsumption> findAllAcount(){
-        return waterConsumptionRepository.findAll();
+//    @GetMapping("/water")
+//    public List<WaterConsumption> findAllAcount(){
+//        return waterConsumptionRepository.findAll();
+//    }
+@GetMapping("/water/{user_id}")
+public ResponseEntity<List<WaterConsumption>> findWaterConsumptionsByUserId(
+        @PathVariable String user_id) {
+    List<WaterConsumption> waterConsumptions = waterConsumptionRepository.findByUserid(user_id);
+
+    if (!waterConsumptions.isEmpty()) {
+        return ResponseEntity.ok(waterConsumptions);
+    } else {
+        System.out.println("Water consumption not found for user_id: " + user_id);
+        // Any additional logic or statements if needed
+        return ResponseEntity.ok(Collections.emptyList()); // Return an empty list
     }
-    @GetMapping("/water/{date}")
+}
+
+
+    @GetMapping("/waterr/{date}")
     public WaterConsumption findDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date){
         return waterConsumptionRepository.findByDate(date);
     }
+
+    @GetMapping("/water/{user_id}/{date}")
+    public ResponseEntity<WaterConsumption> findWaterConsumptionByDateAndUserId(
+            @PathVariable String user_id,
+            @PathVariable(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date
+            ) {
+        WaterConsumption waterConsumption = waterConsumptionRepository.findByDateAndUserid(date, user_id);
+        if (waterConsumption != null) {
+            return ResponseEntity.ok(waterConsumption);
+        }
+        else {
+            System.out.println("Water consumption not found for user_id: " + user_id);
+            // Any additional logic or statements if needed
+        }
+        return null;
+    }
+
+
+
+
     @PostMapping("/water")
     ResponseEntity<?> create(@RequestBody WaterConsumption waterConsumption) {
 
@@ -64,9 +100,18 @@ public class WaterConsumptionController {
         }
 }
     @GetMapping(value = "/waterconsumptiondate/{date}")
-    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public ResponseEntity<?> existsUserByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         // get entity
         boolean result = waterConsumptionRepository.existsByDate(date);
+
+        // return result
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    @GetMapping(value = "/waterconsumptiondate/{date}/{user_id}")
+    public ResponseEntity<?> existsUserByUserName(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                                  @PathVariable String user_id) {
+        // get entity
+        boolean result = waterConsumptionRepository.existsByDateAndUserid(date,user_id);
 
         // return result
         return new ResponseEntity<>(result, HttpStatus.OK);

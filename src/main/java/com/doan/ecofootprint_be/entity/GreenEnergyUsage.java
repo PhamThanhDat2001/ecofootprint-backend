@@ -37,7 +37,9 @@ public class GreenEnergyUsage {
     @Column(name = "description")
     private  String description;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users users;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private Users users;
+    @Column(name = "user_id")
+    private String userid;
 }
