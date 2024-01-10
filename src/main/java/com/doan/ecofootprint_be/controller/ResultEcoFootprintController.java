@@ -49,28 +49,7 @@ public class ResultEcoFootprintController {
         resultEcoFootprintRepository.deleteById(id);
         return ResponseEntity.ok("Deleted successfully.");
     }
-//    @PutMapping("/resultecofootprint/{id}")
-//    public ResponseEntity<?> update(@PathVariable int id, @RequestBody  ResultEcoFootprint resultEcoFootprint) {
-//        Optional<ResultEcoFootprint> existingLogOptional = resultEcoFootprintRepository.findById(id);
-//
-//        if (existingLogOptional.isPresent()) {
-//            ResultEcoFootprint existingLog = existingLogOptional.get();
-//
-//            // Update the properties of existingLog with the properties from energyConsumption
-//            existingLog.setUser_id(resultEcoFootprint.getUser_id());
-//            existingLog.setUsername(resultEcoFootprint.getUsername());
-//            existingLog.setResult(resultEcoFootprint.getResult());
-//            existingLog.setTotal_results(resultEcoFootprint.getTotal_results());
-//
-//            // Save the updated entity
-//            ResultEcoFootprint updatedLog = resultEcoFootprintRepository.save(existingLog);
-//
-//            return ResponseEntity.ok(updatedLog);
-//        } else {
-//            // Log with the specified ID was not found
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+
 @PutMapping("/resultecofootprint/user/{user_id}")
 public ResponseEntity<?> updateByUserId(@PathVariable String user_id, @RequestBody ResultEcoFootprint resultEcoFootprint) {
     Optional<ResultEcoFootprint> existingLogOptional = resultEcoFootprintRepository.findByUser_id(user_id);
@@ -81,7 +60,7 @@ public ResponseEntity<?> updateByUserId(@PathVariable String user_id, @RequestBo
         // Update the properties of existingLog with the properties from resultEcoFootprint
         existingLog.setUsername(resultEcoFootprint.getUsername());
         existingLog.setResult(resultEcoFootprint.getResult());
-        existingLog.setTotal_results(resultEcoFootprint.getTotal_results());
+        existingLog.setDate(resultEcoFootprint.getDate());
 
         // Save the updated entity
         ResultEcoFootprint updatedLog = resultEcoFootprintRepository.save(existingLog);

@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,8 +27,16 @@ public class ResultEcoFootprint {
     @Column(name = "result")
     private BigDecimal result;
 
-    @Column(name = "total_results")
-    private BigDecimal total_results;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "date")
+    private Date date;
+
+    @PrePersist
+    protected void onCreate() {
+        // Set the default value to the current date when a new entity is persisted
+        date = Calendar.getInstance().getTime();
+    }
 
     @Column(name = "user_id")
     private String user_id;
