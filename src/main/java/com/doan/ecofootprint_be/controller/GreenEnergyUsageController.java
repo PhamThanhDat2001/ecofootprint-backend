@@ -87,9 +87,9 @@ public class GreenEnergyUsageController {
             // Update the properties of existingLog with the properties from energyConsumption
             existingLog.setDate(greenEnergyUsage.getDate());
             existingLog.setUnit(greenEnergyUsage.getUnit());
-            existingLog.setEnergySource(greenEnergyUsage.getEnergySource());
+            existingLog.setHousingType(greenEnergyUsage.getHousingType());
             existingLog.setDescription(greenEnergyUsage.getDescription());
-            existingLog.setUsageAmount(greenEnergyUsage.getUsageAmount());
+            existingLog.setAcreage(greenEnergyUsage.getAcreage());
             // Save the updated entity
             GreenEnergyUsage updatedLog = greenEnergyUsageRepository.save(existingLog);
 

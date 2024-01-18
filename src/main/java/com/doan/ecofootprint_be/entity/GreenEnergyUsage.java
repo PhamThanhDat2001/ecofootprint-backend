@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Entity
-@Table(name = "green_energy_usage")
+@Table(name = "house")
 public class GreenEnergyUsage {
     @Id
     @Column(name = "id")
@@ -25,11 +25,11 @@ public class GreenEnergyUsage {
     @Column(name = "date")
     private Date date;
 
-    @Column(name = "energy_source")
-    private  String energySource;
+    @Column(name = "housing_type")
+    private  String housingType;
 
-    @Column(name = "usage_amount")
-    private BigDecimal usageAmount;
+    @Column(name = "acreage")
+    private BigDecimal acreage;
 
     @Column(name = "unit")
     private  String unit;
