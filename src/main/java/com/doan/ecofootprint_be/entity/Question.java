@@ -23,6 +23,12 @@ public class Question {
     private Long id;
     @Column(name = "content")
     private String content;
+
     @Column(name = "user_id")
     private String userid;
+
+
+    @Column(name = "username", unique = true)
+    private  String username;
+
 }

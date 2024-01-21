@@ -20,8 +20,10 @@ public class Answer {
     private Long id;
     @Column(name = "content")
     private String content;
-
+    @Column(name = "username", unique = true)
+    private  String username;
     @Column(name = "question_id")
     private Long questionId;
-
+    @Column(name = "user_id")
+    private String userid;
 }

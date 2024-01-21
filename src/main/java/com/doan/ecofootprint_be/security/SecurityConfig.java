@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/user/profile").permitAll()
 //                .antMatchers("/api/v1/forgot_password").permitAll()
 //                .antMatchers("/api/v1/change_password/**").permitAll()
-                .antMatchers("/api/v1/user/**").hasRole("USER")
+//                .antMatchers("/api/v1/user/**").hasRole("USER")
 //                .antMatchers("/api/v1/admin/**").hasRole("ADMIN")
 //                .anyRequest().authenticated() // Tất cả các request khác đều cần phải xác thực mới được truy cập
                 .and()
